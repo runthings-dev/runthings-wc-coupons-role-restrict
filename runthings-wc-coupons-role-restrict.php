@@ -1,16 +1,33 @@
 <?php
 
 /**
- * Plugin Name: WooCommerce Coupon - Restrict By Role
- * Plugin URI: http://yourwebsite.com/
+ * Plugin Name: Coupons Role Restrict for WooCommerce
+ * Plugin URI: https://runthings.dev
  * Description: Restrict the usage of coupons based on user roles.
- * Version: 1.0
- * Author: Your Name
- * Author URI: http://yourwebsite.com/
+ * Version: 0.5.0
+ * Author: runthingsdev
+ * Author URI: https://runthings.dev/
+ * License: GPLv3 or later
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
+/*
+Copyright 2024 Matthew Harris
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License, version 2, as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+if (!defined('WPINC')) {
+    die;
 }
 
 class Runthings_WC_Coupon_Role_Restrict
