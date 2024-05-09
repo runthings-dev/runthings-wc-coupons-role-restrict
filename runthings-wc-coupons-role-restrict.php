@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Coupons Role Restrict for WooCommerce
+ * Plugin Name: Coupons Role Restriction for WooCommerce
  * Plugin URI: https://runthings.dev
  * Description: Restrict the usage of coupons based on user roles.
  * Version: 0.5.0
