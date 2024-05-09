@@ -33,6 +33,7 @@ if (!defined('WPINC')) {
 
 class Runthings_WC_Coupon_Role_Restrict
 {
+    const META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
 
     public function __construct()
     {
@@ -53,11 +54,11 @@ class Runthings_WC_Coupon_Role_Restrict
         foreach ($roles as $key => $role) {
             $label_text = $is_first ? 'Allowed roles' : '';
             woocommerce_wp_checkbox(array(
-                'id' => 'runthings_allowed_user_roles_' . esc_attr($key),
+                'id' => SELF::META_KEY_PREFIX . esc_attr($key),
                 'label' => $label_text,
                 'description' => $role['name'],
                 'desc_tip' => false,
-                'value' => get_post_meta($post->ID, 'runthings_allowed_user_roles_' . $key, true)
+                'value' => get_post_meta($post->ID, SELF::META_KEY_PREFIX . $key, true)
             ));
             $is_first = false;
         }
@@ -74,8 +75,8 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
-            $checkbox_value = wc_bool_to_string(isset($_POST['runthings_allowed_user_roles_' . $key]));
-            update_post_meta($post_id, 'runthings_allowed_user_roles_' . $key, $checkbox_value);
+            $checkbox_value = wc_bool_to_string(isset($_POST[SELF::META_KEY_PREFIX . $key]));
+            update_post_meta($post_id, SELF::META_KEY_PREFIX . $key, $checkbox_value);
         }
     }
 
@@ -91,7 +92,7 @@ class Runthings_WC_Coupon_Role_Restrict
         $any_role_selected = false;
 
         foreach ($roles as $key => $role) {
-            $role_setting = get_post_meta($coupon->get_id(), 'runthings_allowed_user_roles_' . $key, true);
+            $role_setting = get_post_meta($coupon->get_id(), SELF::META_KEY_PREFIX . $key, true);
             $role_allowed = wc_string_to_bool($role_setting);
             if ($role_allowed) {
                 $any_role_selected = true;
