@@ -85,7 +85,7 @@ class Runthings_WC_Coupon_Role_Restrict
             return $valid;
         }
 
-        $roles = get_editable_roles();
+        $roles = $this->get_all_roles();
         $user = wp_get_current_user();
         $role_valid = false;
         $any_role_selected = false;
@@ -113,6 +113,15 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         return $role_valid;
+    }
+
+    /**
+     * Mimics the get_editable_roles() function in WordPress core, as its an admin-only function.
+     */
+    private function get_all_roles()
+    {
+        global $wp_roles;
+        return isset($wp_roles) ? $wp_roles->get_names() : array();
     }
 }
 
