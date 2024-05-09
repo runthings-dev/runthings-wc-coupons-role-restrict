@@ -74,7 +74,7 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
-            $checkbox_value = isset($_POST['runthings_allowed_user_roles_' . $key]) ? 'yes' : 'no';
+            $checkbox_value = wc_bool_to_string(isset($_POST['runthings_allowed_user_roles_' . $key]));
             update_post_meta($post_id, 'runthings_allowed_user_roles_' . $key, $checkbox_value);
         }
     }
@@ -92,7 +92,8 @@ class Runthings_WC_Coupon_Role_Restrict
 
         foreach ($roles as $key => $role) {
             $role_setting = get_post_meta($coupon->get_id(), 'runthings_allowed_user_roles_' . $key, true);
-            if ($role_setting === 'yes') {
+            $role_allowed = wc_string_to_bool($role_setting);
+            if ($role_allowed) {
                 $any_role_selected = true;
                 if (in_array($key, $user->roles)) {
                     $role_valid = true;
