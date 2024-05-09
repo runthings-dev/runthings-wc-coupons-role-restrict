@@ -47,6 +47,7 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = get_editable_roles();
 
         echo '<div class="options_group">';
+        wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
 
         $is_first = true;
         foreach ($roles as $key => $role) {
@@ -66,6 +67,10 @@ class Runthings_WC_Coupon_Role_Restrict
 
     public function save_role_restriction_fields($post_id)
     {
+        if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce($_POST['runthings_roles_nonce'], 'runthings_save_roles')) {
+            return;
+        }
+
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
