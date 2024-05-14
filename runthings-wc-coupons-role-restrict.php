@@ -47,6 +47,9 @@ class Runthings_WC_Coupon_Role_Restrict
         add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
     }
 
+    /**
+     * Adds role restriction fields to the coupon options.
+     */
     public function add_role_restriction_fields()
     {
         global $post;
@@ -60,11 +63,11 @@ class Runthings_WC_Coupon_Role_Restrict
             $label_text = $is_first ? esc_html__('Allowed roles', 'runthings-wc-coupon-role-restrict') : '';
             woocommerce_wp_checkbox(
                 array(
-                    'id' => self::META_KEY_PREFIX . esc_attr($key),
-                    'label' => esc_html($label_text),
+                    'id'          => self::META_KEY_PREFIX . esc_attr($key),
+                    'label'       => esc_html($label_text),
                     'description' => esc_html($role['name']),
-                    'desc_tip' => false,
-                    'value' => esc_attr(get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true)),
+                    'desc_tip'    => false,
+                    'value'       => esc_attr(get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true)),
                 )
             );
             $is_first = false;
@@ -73,6 +76,11 @@ class Runthings_WC_Coupon_Role_Restrict
         echo '</div>';
     }
 
+    /**
+     * Saves role restriction fields for the coupon.
+     *
+     * @param int $post_id The ID of the post being saved.
+     */
     public function save_role_restriction_fields($post_id)
     {
         if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['runthings_roles_nonce'])), 'runthings_save_roles')) {
@@ -88,6 +96,14 @@ class Runthings_WC_Coupon_Role_Restrict
         }
     }
 
+    /**
+     * Validates the coupon based on user roles.
+     *
+     * @param bool        $valid    Whether the coupon is valid.
+     * @param WC_Coupon   $coupon   The coupon being validated.
+     * @param WC_Discount $discount The discount object.
+     * @return bool Whether the coupon is valid.
+     */
     public function validate_coupon_based_on_roles($valid, $coupon, $discount)
     {
         if (!$valid) {
@@ -95,7 +111,7 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         $roles = self::get_all_roles();
-        $user = wp_get_current_user();
+        $user  = wp_get_current_user();
         $role_valid = false;
         $any_role_selected = false;
 
@@ -116,6 +132,7 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         if (!$role_valid && $any_role_selected) {
+            error_log('Coupon validation failed for user role.', 0);
             throw new Exception(esc_html__('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupon-role-restrict'));
             return false;
         }
@@ -124,7 +141,10 @@ class Runthings_WC_Coupon_Role_Restrict
     }
 
     /**
+     * Gets all roles available in the system.
      * Mimics the get_editable_roles() function in WordPress core, as its an admin-only function.
+     *
+     * @return array An array of role names.
      */
     private static function get_all_roles()
     {
