@@ -10,6 +10,8 @@
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Requires Plugins: WooCommerce
+ * Text Domain: runthings-wc-coupon-role-restrict
+ * Domain Path: /languages
  */
 
 /*
@@ -55,14 +57,14 @@ class Runthings_WC_Coupon_Role_Restrict
 
         $is_first = true;
         foreach ($roles as $key => $role) {
-            $label_text = $is_first ? 'Allowed roles' : '';
+            $label_text = $is_first ? esc_html__('Allowed roles', 'runthings-wc-coupon-role-restrict') : '';
             woocommerce_wp_checkbox(
                 array(
                     'id' => self::META_KEY_PREFIX . esc_attr($key),
-                    'label' => $label_text,
-                    'description' => $role['name'],
+                    'label' => esc_html($label_text),
+                    'description' => esc_html($role['name']),
                     'desc_tip' => false,
-                    'value' => get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true),
+                    'value' => esc_attr(get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true)),
                 )
             );
             $is_first = false;
@@ -80,8 +82,9 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
-            $checkbox_value = wc_bool_to_string(isset($_POST[self::META_KEY_PREFIX . esc_attr($key)]));
-            update_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($key), sanitize_text_field($checkbox_value));
+            $meta_key = self::META_KEY_PREFIX . esc_attr($key);
+            $checkbox_value = wc_bool_to_string(isset($_POST[$meta_key]));
+            update_post_meta($post_id, $meta_key, sanitize_text_field($checkbox_value));
         }
     }
 
@@ -113,7 +116,7 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         if (!$role_valid && $any_role_selected) {
-            throw new Exception('Sorry, this coupon is not valid for your account type.');
+            throw new Exception(esc_html__('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupon-role-restrict'));
             return false;
         }
 
