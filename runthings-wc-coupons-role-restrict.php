@@ -58,11 +58,11 @@ class Runthings_WC_Coupon_Role_Restrict
             $label_text = $is_first ? 'Allowed roles' : '';
             woocommerce_wp_checkbox(
                 array(
-                    'id'          => self::META_KEY_PREFIX . esc_attr($key),
-                    'label'       => $label_text,
+                    'id' => self::META_KEY_PREFIX . esc_attr($key),
+                    'label' => $label_text,
                     'description' => $role['name'],
-                    'desc_tip'    => false,
-                    'value'       => get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true),
+                    'desc_tip' => false,
+                    'value' => get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true),
                 )
             );
             $is_first = false;
