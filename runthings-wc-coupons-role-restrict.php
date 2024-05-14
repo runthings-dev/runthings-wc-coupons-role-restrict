@@ -132,7 +132,9 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         if (!$role_valid && $any_role_selected) {
-            error_log('Coupon validation failed for user role.', 0);
+            $coupon_code = sanitize_text_field($coupon->get_code());
+            $user_roles = implode(', ', array_map('sanitize_text_field', $user->roles));
+            error_log('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, 0);
             throw new Exception(esc_html__('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupon-role-restrict'));
             return false;
         }
