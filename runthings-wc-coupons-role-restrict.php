@@ -42,9 +42,18 @@ class Runthings_WC_Coupon_Role_Restrict
 
     public function __construct()
     {
+        add_action('plugins_loaded', array($this, 'load_textdomain'));
         add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10);
         add_action('woocommerce_coupon_options_save', array($this, 'save_role_restriction_fields'), 10, 1);
         add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
+    }
+
+    /**
+     * Load the plugin text domain for translation.
+     */
+    public function load_textdomain()
+    {
+        load_plugin_textdomain('runthings-wc-coupon-role-restrict', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
