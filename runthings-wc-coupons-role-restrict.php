@@ -73,15 +73,15 @@ class Runthings_WC_Coupon_Role_Restrict
 
     public function save_role_restriction_fields($post_id)
     {
-        if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce($_POST['runthings_roles_nonce'], 'runthings_save_roles')) {
+        if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['runthings_roles_nonce'])), 'runthings_save_roles')) {
             return;
         }
 
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
-            $checkbox_value = wc_bool_to_string(isset($_POST[SELF::META_KEY_PREFIX . $key]));
-            update_post_meta($post_id, SELF::META_KEY_PREFIX . $key, $checkbox_value);
+            $checkbox_value = wc_bool_to_string(isset($_POST[SELF::META_KEY_PREFIX . esc_attr($key)]));
+            update_post_meta($post_id, SELF::META_KEY_PREFIX . esc_attr($key), sanitize_text_field($checkbox_value));
         }
     }
 
