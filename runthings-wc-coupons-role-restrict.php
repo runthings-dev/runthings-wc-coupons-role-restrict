@@ -58,11 +58,11 @@ class Runthings_WC_Coupon_Role_Restrict
             $label_text = $is_first ? 'Allowed roles' : '';
             woocommerce_wp_checkbox(
                 array(
-                    'id'          => SELF::META_KEY_PREFIX . esc_attr($key),
+                    'id'          => self::META_KEY_PREFIX . esc_attr($key),
                     'label'       => $label_text,
                     'description' => $role['name'],
                     'desc_tip'    => false,
-                    'value'       => get_post_meta($post->ID, SELF::META_KEY_PREFIX . $key, true),
+                    'value'       => get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true),
                 )
             );
             $is_first = false;
@@ -80,8 +80,8 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = get_editable_roles();
 
         foreach ($roles as $key => $role) {
-            $checkbox_value = wc_bool_to_string(isset($_POST[SELF::META_KEY_PREFIX . esc_attr($key)]));
-            update_post_meta($post_id, SELF::META_KEY_PREFIX . esc_attr($key), sanitize_text_field($checkbox_value));
+            $checkbox_value = wc_bool_to_string(isset($_POST[self::META_KEY_PREFIX . esc_attr($key)]));
+            update_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($key), sanitize_text_field($checkbox_value));
         }
     }
 
@@ -97,7 +97,7 @@ class Runthings_WC_Coupon_Role_Restrict
         $any_role_selected = false;
 
         foreach ($roles as $key => $role) {
-            $role_setting = get_post_meta($coupon->get_id(), SELF::META_KEY_PREFIX . $key, true);
+            $role_setting = get_post_meta($coupon->get_id(), self::META_KEY_PREFIX . $key, true);
             $role_allowed = wc_string_to_bool($role_setting);
             if ($role_allowed) {
                 $any_role_selected = true;
