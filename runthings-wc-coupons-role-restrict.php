@@ -95,7 +95,7 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         $roles = $this->get_all_roles();
-        $user  = wp_get_current_user();
+        $user = wp_get_current_user();
         $role_valid = false;
         $any_role_selected = false;
 
