@@ -11,6 +11,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Requires Plugins: WooCommerce
  */
+
 /*
 Copyright 2024 Matthew Harris
 
@@ -20,24 +21,26 @@ published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
+
 if (!defined('WPINC')) {
     die;
 }
 
 class Runthings_WC_Coupon_Role_Restrict
 {
+
     const META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
 
     public function __construct()
     {
-        add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10, 0);
+        add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10);
         add_action('woocommerce_coupon_options_save', array($this, 'save_role_restriction_fields'), 10, 1);
         add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
     }
@@ -53,13 +56,15 @@ class Runthings_WC_Coupon_Role_Restrict
         $is_first = true;
         foreach ($roles as $key => $role) {
             $label_text = $is_first ? 'Allowed roles' : '';
-            woocommerce_wp_checkbox(array(
-                'id' => SELF::META_KEY_PREFIX . esc_attr($key),
-                'label' => $label_text,
-                'description' => $role['name'],
-                'desc_tip' => false,
-                'value' => get_post_meta($post->ID, SELF::META_KEY_PREFIX . $key, true)
-            ));
+            woocommerce_wp_checkbox(
+                array(
+                    'id'          => SELF::META_KEY_PREFIX . esc_attr($key),
+                    'label'       => $label_text,
+                    'description' => $role['name'],
+                    'desc_tip'    => false,
+                    'value'       => get_post_meta($post->ID, SELF::META_KEY_PREFIX . $key, true),
+                )
+            );
             $is_first = false;
         }
 
@@ -87,7 +92,7 @@ class Runthings_WC_Coupon_Role_Restrict
         }
 
         $roles = $this->get_all_roles();
-        $user = wp_get_current_user();
+        $user  = wp_get_current_user();
         $role_valid = false;
         $any_role_selected = false;
 
@@ -96,19 +101,17 @@ class Runthings_WC_Coupon_Role_Restrict
             $role_allowed = wc_string_to_bool($role_setting);
             if ($role_allowed) {
                 $any_role_selected = true;
-                if (in_array($key, $user->roles)) {
+                if (in_array($key, $user->roles, true)) {
                     $role_valid = true;
                     break;
                 }
             }
         }
 
-        // If no roles are selected on the coupon, skip the role check
         if (!$any_role_selected) {
             return $valid;
         }
 
-        // If roles are selected but none match the user's roles, invalidate the coupon
         if (!$role_valid && $any_role_selected) {
             throw new Exception('Sorry, this coupon is not valid for your account type.');
             return false;
