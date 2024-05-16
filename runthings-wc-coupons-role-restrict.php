@@ -95,7 +95,7 @@ class Runthings_WC_Coupon_Role_Restrict
 ?>
         <p class="form-field">
             <label for="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>"><?php esc_html_e('Allowed roles', 'runthings-wc-coupon-role-restrict'); ?></label>
-            <select id="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>" name="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;">
+            <select id="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>" name="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('Any role', 'runthings-wc-coupon-role-restrict'); ?>">
                 <?php
                 foreach ($allowed_roles as $role) {
                     echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
