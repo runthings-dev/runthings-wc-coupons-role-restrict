@@ -38,7 +38,8 @@ if (!defined('WPINC')) {
 class Runthings_WC_Coupon_Role_Restrict
 {
 
-    const META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
+    const ALLOWED_META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
+    const EXCLUDED_META_KEY_PREFIX = 'runthings_wc_role_restrict_excluded_roles_';
 
     public function __construct()
     {
@@ -85,24 +86,40 @@ class Runthings_WC_Coupon_Role_Restrict
             );
         }
 
-        $selected_roles = array();
+        $selected_allowed_roles = array();
+        $selected_excluded_roles = array();
         foreach ($roles as $key => $role) {
-            if (get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true) === 'yes') {
-                $selected_roles[] = $key;
+            if (get_post_meta($post->ID, self::ALLOWED_META_KEY_PREFIX . $key, true) === 'yes') {
+                $selected_allowed_roles[] = $key;
+            }
+            if (get_post_meta($post->ID, self::EXCLUDED_META_KEY_PREFIX . $key, true) === 'yes') {
+                $selected_excluded_roles[] = $key;
             }
         }
 
 ?>
         <p class="form-field">
-            <label for="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>"><?php esc_html_e('Allowed roles', 'runthings-wc-coupon-role-restrict'); ?></label>
-            <select id="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>" name="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('Any role', 'runthings-wc-coupon-role-restrict'); ?>">
+            <label for="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>"><?php esc_html_e('Roles', 'runthings-wc-coupon-role-restrict'); ?></label>
+            <select id="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('Any role', 'runthings-wc-coupon-role-restrict'); ?>">
                 <?php
                 foreach ($allowed_roles as $role) {
-                    echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
+                    echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_allowed_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
                 }
                 ?>
             </select>
             <?php echo wc_help_tip(esc_html__('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict')); ?>
+        </p>
+
+        <p class="form-field">
+            <label for="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>"><?php esc_html_e('Excluded roles', 'runthings-wc-coupon-role-restrict'); ?></label>
+            <select id="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('No roles', 'runthings-wc-coupon-role-restrict'); ?>">
+                <?php
+                foreach ($allowed_roles as $role) {
+                    echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_excluded_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
+                }
+                ?>
+            </select>
+            <?php echo wc_help_tip(esc_html__('Select the roles excluded from using this coupon.', 'runthings-wc-coupon-role-restrict')); ?>
         </p>
 <?php
 
@@ -124,14 +141,23 @@ class Runthings_WC_Coupon_Role_Restrict
 
         // Reset all role meta
         foreach ($roles as $key => $role) {
-            delete_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($key));
+            delete_post_meta($post_id, self::ALLOWED_META_KEY_PREFIX . esc_attr($key));
+            delete_post_meta($post_id, self::EXCLUDED_META_KEY_PREFIX . esc_attr($key));
         }
 
-        // Save selected roles
-        if (isset($_POST[self::META_KEY_PREFIX . 'allowed_roles'])) {
-            $selected_roles = array_map('sanitize_text_field', wp_unslash($_POST[self::META_KEY_PREFIX . 'allowed_roles']));
-            foreach ($selected_roles as $role) {
-                update_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($role), 'yes');
+        // Save selected allowed roles
+        if (isset($_POST[self::ALLOWED_META_KEY_PREFIX])) {
+            $selected_allowed_roles = array_map('sanitize_text_field', wp_unslash($_POST[self::ALLOWED_META_KEY_PREFIX]));
+            foreach ($selected_allowed_roles as $role) {
+                update_post_meta($post_id, self::ALLOWED_META_KEY_PREFIX . esc_attr($role), 'yes');
+            }
+        }
+
+        // Save selected excluded roles
+        if (isset($_POST[self::EXCLUDED_META_KEY_PREFIX])) {
+            $selected_excluded_roles = array_map('sanitize_text_field', wp_unslash($_POST[self::EXCLUDED_META_KEY_PREFIX]));
+            foreach ($selected_excluded_roles as $role) {
+                update_post_meta($post_id, self::EXCLUDED_META_KEY_PREFIX . esc_attr($role), 'yes');
             }
         }
     }
@@ -156,14 +182,21 @@ class Runthings_WC_Coupon_Role_Restrict
         $any_role_selected = false;
 
         foreach ($roles as $key => $role) {
-            $role_setting = get_post_meta($coupon->get_id(), self::META_KEY_PREFIX . $key, true);
+            $role_setting = get_post_meta($coupon->get_id(), self::ALLOWED_META_KEY_PREFIX . $key, true);
             $role_allowed = wc_string_to_bool($role_setting);
             if ($role_allowed) {
                 $any_role_selected = true;
                 if (in_array($key, $user->roles, true)) {
                     $role_valid = true;
-                    break;
                 }
+            }
+
+            // Check for excluded roles
+            $excluded_role_setting = get_post_meta($coupon->get_id(), self::EXCLUDED_META_KEY_PREFIX . $key, true);
+            $role_excluded = wc_string_to_bool($excluded_role_setting);
+            if ($role_excluded && in_array($key, $user->roles, true)) {
+                $role_valid = false;
+                break;
             }
         }
 
