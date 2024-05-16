@@ -102,14 +102,12 @@ class Runthings_WC_Coupon_Role_Restrict
                 }
                 ?>
             </select>
-            <span class="woocommerce-help-tip" data-tip="<?php esc_html_e('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict'); ?>"></span>
+            <?php echo wc_help_tip(esc_html__('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict')); ?>
         </p>
 <?php
 
         echo '</div>';
     }
-
-
 
     /**
      * Saves role restriction fields for the coupon.
