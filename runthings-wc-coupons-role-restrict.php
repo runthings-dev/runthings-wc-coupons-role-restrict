@@ -91,6 +91,7 @@ class Runthings_WC_Coupon_Role_Restrict
                 $selected_roles[] = $key;
             }
         }
+
 ?>
         <p class="form-field">
             <label for="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>"><?php esc_html_e('Allowed roles', 'runthings-wc-coupon-role-restrict'); ?></label>
@@ -101,12 +102,13 @@ class Runthings_WC_Coupon_Role_Restrict
                 }
                 ?>
             </select>
-            <span class="description"><?php esc_html_e('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict'); ?></span>
+            <span class="woocommerce-help-tip" data-tip="<?php esc_html_e('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict'); ?>"></span>
         </p>
 <?php
 
         echo '</div>';
     }
+
 
 
     /**
