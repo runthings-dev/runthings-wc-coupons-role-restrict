@@ -1,0 +1,48 @@
+# Copyright (C) 2024 runthingsdev
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Coupons Role Restriction for WooCommerce 0.5.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/runthings-wc-coupons-role-restrict\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-05-16T21:23:42+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: runthings-wc-coupon-role-restrict\n"
+
+#. Plugin Name of the plugin
+#: runthings-wc-coupons-role-restrict.php
+msgid "Coupons Role Restriction for WooCommerce"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: runthings-wc-coupons-role-restrict.php
+msgid "https://runthings.dev"
+msgstr ""
+
+#. Description of the plugin
+#: runthings-wc-coupons-role-restrict.php
+msgid "Restrict the usage of coupons based on user roles."
+msgstr ""
+
+#. Author of the plugin
+#: runthings-wc-coupons-role-restrict.php
+msgid "runthingsdev"
+msgstr ""
+
+#. Author URI of the plugin
+#: runthings-wc-coupons-role-restrict.php
+msgid "https://runthings.dev/"
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:72
+msgid "Allowed roles"
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:147
+msgid "Sorry, this coupon is not valid for your account type."
+msgstr ""
