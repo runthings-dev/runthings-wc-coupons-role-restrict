@@ -43,6 +43,7 @@ class Runthings_WC_Coupon_Role_Restrict
     public function __construct()
     {
         add_action('plugins_loaded', array($this, 'load_textdomain'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_select2'));
         add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10);
         add_action('woocommerce_coupon_options_save', array($this, 'save_role_restriction_fields'), 10, 1);
         add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
@@ -57,6 +58,15 @@ class Runthings_WC_Coupon_Role_Restrict
     }
 
     /**
+     * Enqueues the Select2 library for the coupon role restriction fields.
+     */
+    public function enqueue_select2()
+    {
+        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), '4.0.13');
+        wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), '4.0.13');
+    }
+
+    /**
      * Adds role restriction fields to the coupon options.
      */
     public function add_role_restriction_fields()
@@ -67,23 +77,37 @@ class Runthings_WC_Coupon_Role_Restrict
         echo '<div class="options_group">';
         wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
 
-        $is_first = true;
+        $allowed_roles = array();
         foreach ($roles as $key => $role) {
-            $label_text = $is_first ? esc_html__('Allowed roles', 'runthings-wc-coupon-role-restrict') : '';
-            woocommerce_wp_checkbox(
-                array(
-                    'id'          => self::META_KEY_PREFIX . esc_attr($key),
-                    'label'       => esc_html($label_text),
-                    'description' => esc_html($role['name']),
-                    'desc_tip'    => false,
-                    'value'       => esc_attr(get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true)),
-                )
+            $allowed_roles[] = array(
+                'id'   => $key,
+                'text' => $role['name'],
             );
-            $is_first = false;
         }
+
+        $selected_roles = array();
+        foreach ($roles as $key => $role) {
+            if (get_post_meta($post->ID, self::META_KEY_PREFIX . $key, true) === 'yes') {
+                $selected_roles[] = $key;
+            }
+        }
+?>
+        <p class="form-field">
+            <label for="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>"><?php esc_html_e('Allowed roles', 'runthings-wc-coupon-role-restrict'); ?></label>
+            <select id="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>" name="<?php echo esc_attr(self::META_KEY_PREFIX . 'allowed_roles'); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;">
+                <?php
+                foreach ($allowed_roles as $role) {
+                    echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
+                }
+                ?>
+            </select>
+            <span class="description"><?php esc_html_e('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict'); ?></span>
+        </p>
+<?php
 
         echo '</div>';
     }
+
 
     /**
      * Saves role restriction fields for the coupon.
@@ -98,10 +122,17 @@ class Runthings_WC_Coupon_Role_Restrict
 
         $roles = get_editable_roles();
 
+        // Reset all role meta
         foreach ($roles as $key => $role) {
-            $meta_key = self::META_KEY_PREFIX . esc_attr($key);
-            $checkbox_value = wc_bool_to_string(isset($_POST[$meta_key]));
-            update_post_meta($post_id, $meta_key, sanitize_text_field($checkbox_value));
+            delete_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($key));
+        }
+
+        // Save selected roles
+        if (isset($_POST[self::META_KEY_PREFIX . 'allowed_roles'])) {
+            $selected_roles = array_map('sanitize_text_field', wp_unslash($_POST[self::META_KEY_PREFIX . 'allowed_roles']));
+            foreach ($selected_roles as $role) {
+                update_post_meta($post_id, self::META_KEY_PREFIX . esc_attr($role), 'yes');
+            }
         }
     }
 
