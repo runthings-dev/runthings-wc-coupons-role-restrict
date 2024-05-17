@@ -38,6 +38,7 @@ if (!defined('WPINC')) {
 class Runthings_WC_Coupon_Role_Restrict
 {
 
+    const PLUGIN_VERSION = '0.5.0';
     const ALLOWED_META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
     const EXCLUDED_META_KEY_PREFIX = 'runthings_wc_role_restrict_excluded_roles_';
 
@@ -88,8 +89,8 @@ class Runthings_WC_Coupon_Role_Restrict
      */
     public function enqueue_select2()
     {
-        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), '4.0.13', true);
-        wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), '4.0.13');
+        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), self::PLUGIN_VERSION, true);
+        wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), self::PLUGIN_VERSION);
     }
 
     /**
