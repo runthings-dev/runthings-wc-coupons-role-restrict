@@ -43,11 +43,36 @@ class Runthings_WC_Coupon_Role_Restrict
 
     public function __construct()
     {
+        if (!$this->is_woocommerce_active()) {
+            add_action('admin_notices', array($this, 'admin_notice_wc_inactive'));
+            return;
+        }
+
         add_action('plugins_loaded', array($this, 'load_textdomain'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_select2'));
         add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10);
         add_action('woocommerce_coupon_options_save', array($this, 'save_role_restriction_fields'), 10, 1);
         add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
+    }
+
+    /**
+     * Check if WooCommerce is active.
+     *
+     * @return bool
+     */
+    private function is_woocommerce_active()
+    {
+        return in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true) || (is_multisite() && array_key_exists('woocommerce/woocommerce.php', get_site_option('active_sitewide_plugins', array())));
+    }
+
+    /**
+     * Display an admin notice if WooCommerce is inactive.
+     */
+    public function admin_notice_wc_inactive()
+    {
+        echo '<div class="error"><p>';
+        esc_html_e('Coupons Role Restriction for WooCommerce requires WooCommerce to be active. Please install and activate WooCommerce.', 'runthings-wc-coupons-role-restrict');
+        echo '</p></div>';
     }
 
     /**
