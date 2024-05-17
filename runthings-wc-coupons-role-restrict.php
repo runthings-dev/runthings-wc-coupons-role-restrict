@@ -88,7 +88,7 @@ class Runthings_WC_Coupon_Role_Restrict
      */
     public function enqueue_select2()
     {
-        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), '4.0.13');
+        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), '4.0.13', true);
         wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), '4.0.13');
     }
 
