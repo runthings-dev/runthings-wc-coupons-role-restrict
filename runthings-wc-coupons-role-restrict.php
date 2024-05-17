@@ -213,13 +213,15 @@ class Runthings_WC_Coupon_Role_Restrict
         $roles = self::get_all_roles();
         $user  = wp_get_current_user();
         $role_valid = false;
-        $any_role_selected = false;
+        $any_restriction_applied = false;
 
         foreach ($roles as $key => $role) {
+            // Check for allowed roles
             $role_setting = get_post_meta($coupon->get_id(), self::ALLOWED_META_KEY_PREFIX . $key, true);
             $role_allowed = wc_string_to_bool($role_setting);
+
             if ($role_allowed) {
-                $any_role_selected = true;
+                $any_restriction_applied = true;
                 if (in_array($key, $user->roles, true)) {
                     $role_valid = true;
                 }
@@ -228,17 +230,21 @@ class Runthings_WC_Coupon_Role_Restrict
             // Check for excluded roles
             $excluded_role_setting = get_post_meta($coupon->get_id(), self::EXCLUDED_META_KEY_PREFIX . $key, true);
             $role_excluded = wc_string_to_bool($excluded_role_setting);
-            if ($role_excluded && in_array($key, $user->roles, true)) {
-                $role_valid = false;
-                break;
+
+            if ($role_excluded) {
+                $any_restriction_applied = true;
+                if (in_array($key, $user->roles, true)) {
+                    $role_valid = false;
+                    break;
+                }
             }
         }
 
-        if (!$any_role_selected) {
+        if (!$any_restriction_applied) {
             return $valid;
         }
 
-        if (!$role_valid && $any_role_selected) {
+        if (!$role_valid) {
             $coupon_code = sanitize_text_field($coupon->get_code());
             $user_roles = implode(', ', array_map('sanitize_text_field', $user->roles));
             wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, array('source' => 'runthings-wc-coupons-role-restrict'));
