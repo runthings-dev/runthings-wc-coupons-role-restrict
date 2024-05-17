@@ -19,7 +19,7 @@ This plugin allows you to restrict the usage of WooCommerce coupons based on use
 * Restrict coupon usage based on user roles.
 * Select roles using a user-friendly Select2 interface.
 * Option to specify both allowed and excluded roles.
-* Compatible with WooCommerce 5.0 and above.
+* Customize the error message via a filter.
 
 == Installation ==
 
@@ -53,6 +53,22 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 = 0.5.0 =
 Initial release of the plugin. No upgrade steps required.
+
+== Filters ==
+
+### runthings_wc_coupon_role_restrict_error_message
+
+This filter allows customization of the error message shown when a coupon is not valid for the user's account type.
+
+**Usage:**
+
+```php
+add_filter('runthings_wc_coupon_role_restrict_error_message', 'custom_coupon_error_message');
+
+function custom_coupon_error_message($message) {
+    return 'Custom error message for invalid coupon.';
+}
+```
 
 == License ==
 
