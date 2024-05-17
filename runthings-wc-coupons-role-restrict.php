@@ -9,7 +9,7 @@
  * Author URI: https://runthings.dev/
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
- * Requires Plugins: WooCommerce
+ * Requires Plugins: woocommerce
  * Text Domain: runthings-wc-coupons-role-restrict
  * Domain Path: /languages
  */
