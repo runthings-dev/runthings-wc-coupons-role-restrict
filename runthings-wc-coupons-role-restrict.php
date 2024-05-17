@@ -132,7 +132,7 @@ class Runthings_WC_Coupon_Role_Restrict
                 }
                 ?>
             </select>
-            <?php echo wc_help_tip(esc_html__('Select the roles allowed to use this coupon.', 'runthings-wc-coupons-role-restrict')); ?>
+            <?php echo esc_html(wc_help_tip(__('Select the roles allowed to use this coupon.', 'runthings-wc-coupons-role-restrict'))); ?>
         </p>
 
         <p class="form-field">
@@ -144,7 +144,7 @@ class Runthings_WC_Coupon_Role_Restrict
                 }
                 ?>
             </select>
-            <?php echo wc_help_tip(esc_html__('Select the roles excluded from using this coupon.', 'runthings-wc-coupons-role-restrict')); ?>
+            <?php echo esc_html(wc_help_tip(__('Select the roles excluded from using this coupon.', 'runthings-wc-coupons-role-restrict'))); ?>
         </p>
 <?php
 
