@@ -2,9 +2,10 @@
 Contributors: runthingsdev
 Donate link: https://runthings.dev
 Tags: woocommerce, coupons, user roles, role restriction, discount
-Requires at least: 5.0
-Tested up to: 6.0
-Requires PHP: 7.2
+Tested up to: 6.5.3
+Requires at least: 4.7
+Requires PHP: 5.4
+Requires WooCommerce: 3.0
 Stable tag: 0.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
