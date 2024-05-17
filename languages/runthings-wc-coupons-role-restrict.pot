@@ -9,10 +9,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-05-16T21:23:42+00:00\n"
+"POT-Creation-Date: 2024-05-17T07:40:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.10.0\n"
-"X-Domain: runthings-wc-coupon-role-restrict\n"
+"X-Domain: runthings-wc-coupons-role-restrict\n"
 
 #. Plugin Name of the plugin
 #: runthings-wc-coupons-role-restrict.php
@@ -39,10 +39,30 @@ msgstr ""
 msgid "https://runthings.dev/"
 msgstr ""
 
-#: runthings-wc-coupons-role-restrict.php:72
-msgid "Allowed roles"
+#: runthings-wc-coupons-role-restrict.php:102
+msgid "Roles"
 msgstr ""
 
-#: runthings-wc-coupons-role-restrict.php:147
+#: runthings-wc-coupons-role-restrict.php:103
+msgid "Any role"
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:110
+msgid "Select the roles allowed to use this coupon."
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:114
+msgid "Excluded roles"
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:115
+msgid "No roles"
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:122
+msgid "Select the roles excluded from using this coupon."
+msgstr ""
+
+#: runthings-wc-coupons-role-restrict.php:211
 msgid "Sorry, this coupon is not valid for your account type."
 msgstr ""

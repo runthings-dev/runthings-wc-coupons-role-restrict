@@ -10,7 +10,7 @@
  * License: GPLv3 or later
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Requires Plugins: WooCommerce
- * Text Domain: runthings-wc-coupon-role-restrict
+ * Text Domain: runthings-wc-coupons-role-restrict
  * Domain Path: /languages
  */
 
@@ -55,7 +55,7 @@ class Runthings_WC_Coupon_Role_Restrict
      */
     public function load_textdomain()
     {
-        load_plugin_textdomain('runthings-wc-coupon-role-restrict', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('runthings-wc-coupons-role-restrict', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
@@ -99,27 +99,27 @@ class Runthings_WC_Coupon_Role_Restrict
 
 ?>
         <p class="form-field">
-            <label for="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>"><?php esc_html_e('Roles', 'runthings-wc-coupon-role-restrict'); ?></label>
-            <select id="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('Any role', 'runthings-wc-coupon-role-restrict'); ?>">
+            <label for="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>"><?php esc_html_e('Roles', 'runthings-wc-coupons-role-restrict'); ?></label>
+            <select id="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('Any role', 'runthings-wc-coupons-role-restrict'); ?>">
                 <?php
                 foreach ($allowed_roles as $role) {
                     echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_allowed_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
                 }
                 ?>
             </select>
-            <?php echo wc_help_tip(esc_html__('Select the roles allowed to use this coupon.', 'runthings-wc-coupon-role-restrict')); ?>
+            <?php echo wc_help_tip(esc_html__('Select the roles allowed to use this coupon.', 'runthings-wc-coupons-role-restrict')); ?>
         </p>
 
         <p class="form-field">
-            <label for="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>"><?php esc_html_e('Excluded roles', 'runthings-wc-coupon-role-restrict'); ?></label>
-            <select id="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('No roles', 'runthings-wc-coupon-role-restrict'); ?>">
+            <label for="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>"><?php esc_html_e('Excluded roles', 'runthings-wc-coupons-role-restrict'); ?></label>
+            <select id="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>" name="<?php echo esc_attr(self::EXCLUDED_META_KEY_PREFIX); ?>[]" class="wc-enhanced-select" multiple="multiple" style="width: 50%;" data-placeholder="<?php esc_attr_e('No roles', 'runthings-wc-coupons-role-restrict'); ?>">
                 <?php
                 foreach ($allowed_roles as $role) {
                     echo '<option value="' . esc_attr($role['id']) . '"' . (in_array($role['id'], $selected_excluded_roles, true) ? ' selected="selected"' : '') . '>' . esc_html($role['text']) . '</option>';
                 }
                 ?>
             </select>
-            <?php echo wc_help_tip(esc_html__('Select the roles excluded from using this coupon.', 'runthings-wc-coupon-role-restrict')); ?>
+            <?php echo wc_help_tip(esc_html__('Select the roles excluded from using this coupon.', 'runthings-wc-coupons-role-restrict')); ?>
         </p>
 <?php
 
@@ -208,7 +208,7 @@ class Runthings_WC_Coupon_Role_Restrict
             $coupon_code = sanitize_text_field($coupon->get_code());
             $user_roles = implode(', ', array_map('sanitize_text_field', $user->roles));
             wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles);
-            throw new Exception(esc_html__('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupon-role-restrict'));
+            throw new Exception(esc_html__('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
             return false;
         }
 

@@ -1,2 +1,2 @@
 #!/bin/bash
-wp i18n make-pot . languages/runthings-wc-coupon-role-restrict.pot --domain=runthings-wc-coupon-role-restrict
+wp i18n make-pot . languages/runthings-wc-coupons-role-restrict.pot --domain=runthings-wc-coupons-role-restrict
