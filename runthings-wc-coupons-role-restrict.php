@@ -45,7 +45,6 @@ if (!defined('WPINC')) {
 
 class CouponsRoleRestrict
 {
-
     const PLUGIN_VERSION = '0.5.0';
     const ALLOWED_META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
     const EXCLUDED_META_KEY_PREFIX = 'runthings_wc_role_restrict_excluded_roles_';
@@ -53,15 +52,15 @@ class CouponsRoleRestrict
     public function __construct()
     {
         if (!$this->is_woocommerce_active()) {
-            add_action('admin_notices', array($this, 'admin_notice_wc_inactive'));
+            add_action('admin_notices', [$this, 'admin_notice_wc_inactive']);
             return;
         }
 
-        add_action('plugins_loaded', array($this, 'load_textdomain'));
-        add_action('admin_enqueue_scripts', array($this, 'enqueue_select2'));
-        add_action('woocommerce_coupon_options_usage_restriction', array($this, 'add_role_restriction_fields'), 10);
-        add_action('woocommerce_coupon_options_save', array($this, 'save_role_restriction_fields'), 10, 1);
-        add_filter('woocommerce_coupon_is_valid', array($this, 'validate_coupon_based_on_roles'), 10, 3);
+        add_action('plugins_loaded', [$this, 'load_textdomain']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_select2']);
+        add_action('woocommerce_coupon_options_usage_restriction', [$this, 'add_role_restriction_fields'], 10);
+        add_action('woocommerce_coupon_options_save', [$this, 'save_role_restriction_fields'], 10, 1);
+        add_filter('woocommerce_coupon_is_valid', [$this, 'validate_coupon_based_on_roles'], 10, 3);
     }
 
     /**
@@ -71,7 +70,8 @@ class CouponsRoleRestrict
      */
     private function is_woocommerce_active(): bool
     {
-        return in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true) || (is_multisite() && array_key_exists('woocommerce/woocommerce.php', get_site_option('active_sitewide_plugins', array())));
+        return in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true) ||
+            (is_multisite() && array_key_exists('woocommerce/woocommerce.php', get_site_option('active_sitewide_plugins', [])));
     }
 
     /**
@@ -97,8 +97,8 @@ class CouponsRoleRestrict
      */
     public function enqueue_select2(): void
     {
-        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), self::PLUGIN_VERSION, true);
-        wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), self::PLUGIN_VERSION);
+        wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', ['jquery'], self::PLUGIN_VERSION, true);
+        wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', [], self::PLUGIN_VERSION);
     }
 
     /**
@@ -112,16 +112,16 @@ class CouponsRoleRestrict
         echo '<div class="options_group">';
         wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
 
-        $allowed_roles = array();
+        $allowed_roles = [];
         foreach ($roles as $key => $role) {
-            $allowed_roles[] = array(
+            $allowed_roles[] = [
                 'id'   => $key,
                 'text' => $role['name'],
-            );
+            ];
         }
 
-        $selected_allowed_roles = array();
-        $selected_excluded_roles = array();
+        $selected_allowed_roles = [];
+        $selected_excluded_roles = [];
         foreach ($roles as $key => $role) {
             if (get_post_meta($post->ID, self::ALLOWED_META_KEY_PREFIX . $key, true) === 'yes') {
                 $selected_allowed_roles[] = $key;
@@ -130,7 +130,6 @@ class CouponsRoleRestrict
                 $selected_excluded_roles[] = $key;
             }
         }
-
 ?>
         <p class="form-field">
             <label for="<?php echo esc_attr(self::ALLOWED_META_KEY_PREFIX); ?>"><?php esc_html_e('Roles', 'runthings-wc-coupons-role-restrict'); ?></label>
@@ -164,7 +163,6 @@ class CouponsRoleRestrict
             ?>
         </p>
 <?php
-
         echo '</div>';
     }
 
@@ -255,7 +253,7 @@ class CouponsRoleRestrict
         if (!$role_valid) {
             $coupon_code = sanitize_text_field($coupon->get_code());
             $user_roles = implode(', ', array_map('sanitize_text_field', $user->roles));
-            wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, array('source' => 'runthings-wc-coupons-role-restrict'));
+            wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, ['source' => 'runthings-wc-coupons-role-restrict']);
 
             $error_message = apply_filters('runthings_wc_coupon_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
             throw new Exception(esc_html($error_message));
@@ -275,7 +273,7 @@ class CouponsRoleRestrict
     private static function get_all_roles(): array
     {
         global $wp_roles;
-        return isset($wp_roles) ? $wp_roles->get_names() : array();
+        return isset($wp_roles) ? $wp_roles->get_names() : [];
     }
 }
 
