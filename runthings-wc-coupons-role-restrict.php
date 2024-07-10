@@ -167,7 +167,7 @@ class Runthings_WC_Coupon_Role_Restrict
      *
      * @param int $post_id The ID of the post being saved.
      */
-    public function save_role_restriction_fields($post_id): void
+    public function save_role_restriction_fields(int $post_id): void
     {
         if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['runthings_roles_nonce'])), 'runthings_save_roles')) {
             return;
@@ -206,7 +206,7 @@ class Runthings_WC_Coupon_Role_Restrict
      * @param WC_Discount $discount The discount object.
      * @return bool Whether the coupon is valid.
      */
-    public function validate_coupon_based_on_roles($valid, $coupon, $discount): bool
+    public function validate_coupon_based_on_roles(bool $valid, WC_Coupon $coupon, WC_Discount $discount): bool
     {
         if (!$valid) {
             return $valid;
