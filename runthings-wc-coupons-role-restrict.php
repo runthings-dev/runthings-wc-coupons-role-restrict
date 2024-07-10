@@ -33,11 +33,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
+namespace Runthings\WCCouponsRoleRestrict;
+
+use Exception;
+use WC_Coupon;
+use WC_Discount;
+
 if (!defined('WPINC')) {
     die;
 }
 
-class Runthings_WC_Coupon_Role_Restrict
+class CouponsRoleRestrict
 {
 
     const PLUGIN_VERSION = '0.5.0';
@@ -273,4 +279,4 @@ class Runthings_WC_Coupon_Role_Restrict
     }
 }
 
-new Runthings_WC_Coupon_Role_Restrict();
+new CouponsRoleRestrict();
