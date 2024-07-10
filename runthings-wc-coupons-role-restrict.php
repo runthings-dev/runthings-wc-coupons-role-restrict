@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: Coupons Role Restriction for WooCommerce
- * Plugin URI: https://runthings.dev
+ * Plugin URI: https://runthings.dev/wordpress-plugins/wc-coupons-role-restrict/
  * Description: Restrict the usage of coupons based on user roles.
  * Version: 0.5.0
  * Author: runthingsdev
