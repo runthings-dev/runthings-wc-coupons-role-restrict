@@ -37,7 +37,7 @@ namespace Runthings\WCCouponsRoleRestrict;
 
 use Exception;
 use WC_Coupon;
-use WC_Discount;
+use WC_Discounts;
 
 if (!defined('WPINC')) {
     die;
@@ -205,12 +205,12 @@ class CouponsRoleRestrict
     /**
      * Validates the coupon based on user roles.
      *
-     * @param bool        $valid    Whether the coupon is valid.
-     * @param WC_Coupon   $coupon   The coupon being validated.
-     * @param WC_Discount $discount The discount object.
+     * @param bool         $valid    Whether the coupon is valid.
+     * @param WC_Coupon    $coupon   The coupon being validated.
+     * @param WC_Discounts $discounts The discount object.
      * @return bool Whether the coupon is valid.
      */
-    public function validate_coupon_based_on_roles(bool $valid, WC_Coupon $coupon, WC_Discount $discount): bool
+    public function validate_coupon_based_on_roles(bool $valid, WC_Coupon $coupon, WC_Discounts $discounts): bool
     {
         if (!$valid) {
             return $valid;
