@@ -63,7 +63,7 @@ class Runthings_WC_Coupon_Role_Restrict
      *
      * @return bool
      */
-    private function is_woocommerce_active()
+    private function is_woocommerce_active(): bool
     {
         return in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')), true) || (is_multisite() && array_key_exists('woocommerce/woocommerce.php', get_site_option('active_sitewide_plugins', array())));
     }
@@ -71,7 +71,7 @@ class Runthings_WC_Coupon_Role_Restrict
     /**
      * Display an admin notice if WooCommerce is inactive.
      */
-    public function admin_notice_wc_inactive()
+    public function admin_notice_wc_inactive(): void
     {
         echo '<div class="error"><p>';
         esc_html_e('Coupons Role Restriction for WooCommerce requires WooCommerce to be active. Please install and activate WooCommerce.', 'runthings-wc-coupons-role-restrict');
@@ -81,7 +81,7 @@ class Runthings_WC_Coupon_Role_Restrict
     /**
      * Load the plugin text domain for translation.
      */
-    public function load_textdomain()
+    public function load_textdomain(): void
     {
         load_plugin_textdomain('runthings-wc-coupons-role-restrict', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
@@ -89,7 +89,7 @@ class Runthings_WC_Coupon_Role_Restrict
     /**
      * Enqueues the Select2 library for the coupon role restriction fields.
      */
-    public function enqueue_select2()
+    public function enqueue_select2(): void
     {
         wp_enqueue_script('select2', WC()->plugin_url() . '/assets/js/select2/select2.min.js', array('jquery'), self::PLUGIN_VERSION, true);
         wp_enqueue_style('select2', WC()->plugin_url() . '/assets/css/select2.css', array(), self::PLUGIN_VERSION);
@@ -98,7 +98,7 @@ class Runthings_WC_Coupon_Role_Restrict
     /**
      * Adds role restriction fields to the coupon options.
      */
-    public function add_role_restriction_fields()
+    public function add_role_restriction_fields(): void
     {
         global $post;
         $roles = get_editable_roles();
@@ -167,7 +167,7 @@ class Runthings_WC_Coupon_Role_Restrict
      *
      * @param int $post_id The ID of the post being saved.
      */
-    public function save_role_restriction_fields($post_id)
+    public function save_role_restriction_fields($post_id): void
     {
         if (!isset($_POST['runthings_roles_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['runthings_roles_nonce'])), 'runthings_save_roles')) {
             return;
@@ -206,7 +206,7 @@ class Runthings_WC_Coupon_Role_Restrict
      * @param WC_Discount $discount The discount object.
      * @return bool Whether the coupon is valid.
      */
-    public function validate_coupon_based_on_roles($valid, $coupon, $discount)
+    public function validate_coupon_based_on_roles($valid, $coupon, $discount): bool
     {
         if (!$valid) {
             return $valid;
@@ -266,7 +266,7 @@ class Runthings_WC_Coupon_Role_Restrict
      *
      * @return array An array of role names.
      */
-    private static function get_all_roles()
+    private static function get_all_roles(): array
     {
         global $wp_roles;
         return isset($wp_roles) ? $wp_roles->get_names() : array();
