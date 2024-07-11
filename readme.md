@@ -70,7 +70,7 @@ function custom_coupon_error_message($message) {
 
 ### 1.0.0 - 11th July 2024
 
-- Initial release.
+- Initial release
 - Restrict coupons by role
 - Allow coupons by role
 - Filter `runthings_wc_coupons_role_restrict_error_message` to customise error message
