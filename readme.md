@@ -68,7 +68,7 @@ function custom_coupon_error_message($message) {
 
 ## Changelog
 
-### 0.5.0
+### 1.0.0 - 11th July 2024
 
 - Initial release.
 - Restrict coupons by role

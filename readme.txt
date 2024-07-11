@@ -5,7 +5,7 @@ Tested up to: 6.5.3
 Requires at least: 6.4
 Requires PHP: 7.4
 Requires WooCommerce: 8.0
-Stable tag: 0.5.0
+Stable tag: 1.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -57,7 +57,7 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Changelog ==
 
-= 0.5.0 =
+= 1.0.0 - 11th July 2024 =
 * Initial release.
 * Restrict coupons by role
 * Allow coupons by role
@@ -65,7 +65,7 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Upgrade Notice ==
 
-= 0.5.0 =
+= 1.0.0 =
 Initial release of the plugin. No upgrade steps required.
 
 == Filters ==
