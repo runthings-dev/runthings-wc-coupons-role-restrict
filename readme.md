@@ -68,6 +68,10 @@ function custom_coupon_error_message($message) {
 
 ## Changelog
 
+### 1.0.1 - 15th July 2024
+
+- Fix code snippet formatting in documentation
+
 ### 1.0.0 - 11th July 2024
 
 - Initial release
