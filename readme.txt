@@ -76,13 +76,13 @@ This filter allows customization of the error message shown when a coupon is not
 
 **Usage:**
 
-```php
+`
 add_filter('runthings_wc_coupons_role_restrict_error_message', 'custom_coupon_error_message');
 
 function custom_coupon_error_message($message) {
     return 'Custom error message for invalid coupon.';
 }
-```
+`
 
 == License ==
 
