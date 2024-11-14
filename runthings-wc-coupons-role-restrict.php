@@ -48,11 +48,17 @@ class CouponsRoleRestrict
     const PLUGIN_VERSION = '1.0.1';
     const ALLOWED_META_KEY_PREFIX = 'runthings_wc_role_restrict_allowed_roles_';
     const EXCLUDED_META_KEY_PREFIX = 'runthings_wc_role_restrict_excluded_roles_';
+    const GUEST_ROLE = 'runthings_wc_coupons_role_restrict_guest';
 
     public function __construct()
     {
         if (!$this->is_woocommerce_active()) {
             add_action('admin_notices', [$this, 'admin_notice_wc_inactive']);
+            return;
+        }
+
+        if ($this->is_guest_role_conflicting()) {
+            add_action('admin_notices', [$this, 'admin_notice_role_conflict']);
             return;
         }
 
@@ -75,12 +81,37 @@ class CouponsRoleRestrict
     }
 
     /**
+     * Check if the guest role identifier is already in use.
+     *
+     * @return bool True if the guest role conflicts, false otherwise.
+     */
+    private function is_guest_role_conflicting(): bool
+    {
+        $roles = wp_roles()->get_names();
+        return array_key_exists(self::GUEST_ROLE, $roles);
+    }
+
+    /**
      * Display an admin notice if WooCommerce is inactive.
      */
     public function admin_notice_wc_inactive(): void
     {
         echo '<div class="error"><p>';
         esc_html_e('Coupons Role Restriction for WooCommerce requires WooCommerce to be active. Please install and activate WooCommerce.', 'runthings-wc-coupons-role-restrict');
+        echo '</p></div>';
+    }
+
+    /**
+     * Display an admin notice if the guest role identifier conflicts with an existing role.
+     */
+    public function admin_notice_role_conflict(): void
+    {
+        echo '<div class="error"><p>';
+        printf(
+            /* translators: %s: guest role identifier */
+            esc_html__('Coupons Role Restriction for WooCommerce could not be activated because the %s conflicts with an existing role. Please resolve this conflict and reactivate the plugin.', 'runthings-wc-coupons-role-restrict'),
+            '<abbr title="' . esc_attr(self::GUEST_ROLE) . '">' . esc_html__('guest role', 'runthings-wc-coupons-role-restrict') . '</abbr>'
+        );
         echo '</p></div>';
     }
 
@@ -107,16 +138,16 @@ class CouponsRoleRestrict
     public function add_role_restriction_fields(): void
     {
         global $post;
-        $roles = get_editable_roles();
+        $roles = self::get_all_roles();
 
         echo '<div class="options_group">';
         wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
 
         $allowed_roles = [];
-        foreach ($roles as $key => $role) {
+        foreach ($roles as $role_id => $role_text) {
             $allowed_roles[] = [
-                'id'   => $key,
-                'text' => $role['name'],
+                'id'   => $role_id,
+                'text' => $role_text,
             ];
         }
 
@@ -177,7 +208,7 @@ class CouponsRoleRestrict
             return;
         }
 
-        $roles = get_editable_roles();
+        $roles = self::get_all_roles();
 
         // Reset all role meta
         foreach ($roles as $key => $role) {
@@ -217,8 +248,9 @@ class CouponsRoleRestrict
         }
 
         $roles = self::get_all_roles();
-        $user  = wp_get_current_user();
-        $role_valid = false;
+        $user = wp_get_current_user();
+        $user_is_guest = !$user->exists();
+        $role_valid = true;
         $any_restriction_applied = false;
 
         foreach ($roles as $key => $role) {
@@ -228,7 +260,7 @@ class CouponsRoleRestrict
 
             if ($role_allowed) {
                 $any_restriction_applied = true;
-                if (in_array($key, $user->roles, true)) {
+                if (($key === self::GUEST_ROLE && $user_is_guest) || in_array($key, $user->roles, true)) {
                     $role_valid = true;
                 }
             }
@@ -239,20 +271,29 @@ class CouponsRoleRestrict
 
             if ($role_excluded) {
                 $any_restriction_applied = true;
-                if (in_array($key, $user->roles, true)) {
+
+                // Skip guest if not explicitly excluded
+                if ($user_is_guest && $key !== self::GUEST_ROLE) {
+                    continue;
+                }
+
+                // Invalidate for explicit guest exclusion or matched excluded role
+                if (($key === self::GUEST_ROLE && $user_is_guest) || in_array($key, $user->roles, true)) {
                     $role_valid = false;
                     break;
                 }
             }
         }
 
+        // Final role validation state logging
         if (!$any_restriction_applied) {
             return $valid;
         }
 
         if (!$role_valid) {
             $coupon_code = sanitize_text_field($coupon->get_code());
-            $user_roles = implode(', ', array_map('sanitize_text_field', $user->roles));
+            $user_roles = $user_is_guest ? __('Guest', 'runthings-wc-coupons-role-restrict') : implode(', ', array_map('sanitize_text_field', $user->roles));
+
             wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, ['source' => 'runthings-wc-coupons-role-restrict']);
 
             $error_message = apply_filters('runthings_wc_coupons_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
@@ -264,16 +305,22 @@ class CouponsRoleRestrict
         return $role_valid;
     }
 
+
     /**
-     * Gets all roles available in the system.
-     * Mimics the get_editable_roles() function in WordPress core, as its an admin-only function.
+     * Gets all roles available in the system, including the guest role as the first entry.
+     * Mimics the get_editable_roles() function in WordPress core, as it's an admin-only function.
      *
-     * @return array An array of role names.
+     * @return array An array of role names, with the guest role as the first entry.
      */
     private static function get_all_roles(): array
     {
         global $wp_roles;
-        return isset($wp_roles) ? $wp_roles->get_names() : [];
+
+        // Get all roles, or an empty array if none are available
+        $roles = isset($wp_roles) ? $wp_roles->get_names() : [];
+
+        // Prepend the guest role
+        return [self::GUEST_ROLE => esc_html__('Customer Is A Guest', 'runthings-wc-coupons-role-restrict')] + $roles;
     }
 }
 
