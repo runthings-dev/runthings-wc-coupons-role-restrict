@@ -3,8 +3,8 @@
 *.log
 *.zip
 
-# Ignore composer.lock
-composer.lock
+# Ignore composer vendor
+vendor/
 
 # Ignore Node.js modules and dependencies
 node_modules/
