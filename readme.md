@@ -4,12 +4,13 @@ Restrict the usage of WooCommerce coupons based on user roles.
 
 ## Description
 
-This plugin allows you to restrict the usage of WooCommerce coupons based on user roles. You can specify which roles are allowed or excluded from using a coupon, providing more control over your discount strategies.
+This plugin allows you to restrict the usage of WooCommerce coupons based on user roles, including guest users. You can specify which roles (including guests) are allowed or excluded from using a coupon, providing more control over your discount strategies.
 
 ## Features
 
 - Restrict coupon usage based on user roles.
 - Option to specify both allowed and excluded roles.
+- Support for guest users with a "Customer Is A Guest" pseudo-role.
 - Customize the error message via a filter.
 
 ## Installation
@@ -17,23 +18,27 @@ This plugin allows you to restrict the usage of WooCommerce coupons based on use
 1. Upload the plugin files to the `/wp-content/plugins/runthings-wc-coupons-role-restrict` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to WooCommerce > Coupons and edit or create a coupon.
-4. In the "Usage restriction" tab, you will see the options to select allowed and excluded roles for the coupon.
+4. In the "Usage restriction" tab, you will see the options to select allowed and excluded roles for the coupon, including the "Customer Is A Guest" pseudo-role.
 
 ## Frequently Asked Questions
 
 ### Why was this plugin created?
 
-This plugin was created to provide a more secure option for restricting coupon usage. The default email usage restriction for coupons in WooCommerce is based on the unverified billing email address field, which can be freely set by users. By using role restrictions, you can ensure that only verified and authorized users in specific roles can use certain coupons, making it a secure option.
+This plugin was created to provide a more secure option for restricting coupon usage. The default email usage restriction for coupons in WooCommerce is based on the unverified billing email address field, which can be freely set by users. By using role restrictions, you can ensure that only verified and authorized users in specific roles—or guests, when appropriate—can use certain coupons, making it a secure option.
 
 My personal motivation was to have 100% discount coupons that could be used only be staff or developers, without the possibility of this being exploited by somebody putting a fake staff email into the billing email address field.
 
 ### How do I restrict a coupon to specific roles?
 
-Edit the coupon and go to the "Usage restriction" tab. In the "Roles" section, select the roles allowed to use the coupon. If you want to exclude specific roles, select them in the "Excluded roles" section.
+Edit the coupon and go to the "Usage restriction" tab. In the "Roles" section, select the roles allowed to use the coupon. If you want to exclude specific roles, select them in the "Excluded roles" section. For guest users, select or exclude the "Customer Is A Guest" pseudo-role.
 
 ### What happens if a role is both allowed and excluded?
 
 If a role is both allowed and excluded, the exclusion will take precedence, and users with that role will not be able to use the coupon.
+
+### How do I allow a coupon for guests only?
+
+To restrict a coupon to guests only, select the "Customer Is A Guest" pseudo-role in the "Roles" section and leave all other roles unselected.
 
 ### Can I use this plugin with other WooCommerce coupon restrictions?
 
@@ -44,10 +49,10 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 1. Coupon settings page with role restriction fields.
    ![Coupon settings page with role restriction fields](screenshot-1.png)
 
-2. Coupon role selection field
+2. Coupon role selection field.
    ![Coupon role selection field](screenshot-2.png)
 
-3. Example denied coupon usage due to invalid role
+3. Example denied coupon usage due to invalid role.
    ![Example denied coupon usage due to invalid role](screenshot-3.png)
 
 ## Filters
