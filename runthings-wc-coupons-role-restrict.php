@@ -249,15 +249,16 @@ class CouponsRoleRestrict
             return $valid;
         }
 
+        $coupon_meta = $this->get_normalised_meta($coupon);
         $roles = self::get_all_site_roles();
         $user = wp_get_current_user();
 
-        if (!$this->is_user_in_allowed_roles($roles, $user, $coupon)) {
-            return $this->handle_coupon_failure($coupon, $user);
+        if (!$this->is_user_in_allowed_roles($roles, $user, $coupon_meta)) {
+            return $this->handle_coupon_failure($coupon, $coupon_meta, $user);
         }
 
-        if ($this->is_user_in_excluded_roles($roles, $user, $coupon)) {
-            return $this->handle_coupon_failure($coupon, $user);
+        if ($this->is_user_in_excluded_roles($roles, $user, $coupon_meta)) {
+            return $this->handle_coupon_failure($coupon, $coupon_meta, $user);
         }
 
         return true;
@@ -272,13 +273,14 @@ class CouponsRoleRestrict
      * @param WC_Coupon $coupon The coupon being validated.
      * @return bool Whether the user passes the allowed roles criteria.
      */
-    private function is_user_in_allowed_roles(array $roles, WP_User $user, WC_Coupon $coupon): bool
+    private function is_user_in_allowed_roles(array $roles, WP_User $user, array $coupon_meta): bool
     {
         $user_is_guest = !$user->exists();
         $any_allowed_roles_set = false;
 
         foreach ($roles as $key => $role) {
-            $role_setting = get_post_meta($coupon->get_id(), self::ALLOWED_META_KEY_PREFIX . $key, true);
+            $allowed_meta_key = self::ALLOWED_META_KEY_PREFIX . $key;
+            $role_setting = $coupon_meta[$allowed_meta_key] ?? '';
             $role_allowed = wc_string_to_bool($role_setting);
 
             if ($role_allowed) {
@@ -306,13 +308,14 @@ class CouponsRoleRestrict
      * @param WC_Coupon $coupon The coupon being validated.
      * @return bool Whether the user passes the excluded roles criteria.
      */
-    private function is_user_in_excluded_roles(array $roles, WP_User $user, WC_Coupon $coupon): bool
+    private function is_user_in_excluded_roles(array $roles, WP_User $user, array $coupon_meta): bool
     {
         $user_is_guest = !$user->exists();
 
         foreach ($roles as $key => $role) {
-            $excluded_role_setting = get_post_meta($coupon->get_id(), self::EXCLUDED_META_KEY_PREFIX . $key, true);
-            $role_excluded = wc_string_to_bool($excluded_role_setting);
+            $excluded_meta_key = self::EXCLUDED_META_KEY_PREFIX . $key;
+            $role_setting = $coupon_meta[$excluded_meta_key] ?? '';
+            $role_excluded = wc_string_to_bool($role_setting);
 
             if ($role_excluded) {
                 if (($key === self::GUEST_ROLE && $user_is_guest)) {
@@ -336,19 +339,91 @@ class CouponsRoleRestrict
      * @return bool Always returns false.
      * @throws Exception WooCommerce uses exceptions to signal coupon validation failure.
      */
-    private function handle_coupon_failure(WC_Coupon $coupon, WP_User $user): bool
+    private function handle_coupon_failure(WC_Coupon $coupon, array $coupon_meta, WP_User $user): bool
     {
         $user_is_guest = !$user->exists();
 
+        $roles = self::get_all_site_roles();
+        $role_restrictions = $this->collect_role_restrictions($coupon_meta, $roles);
+
+        $error_context = [
+            'coupon' => $coupon,
+            'is_guest' => $user_is_guest,
+            'guest_role_id' => self::GUEST_ROLE,
+            'user' => $user,
+            'allowed_roles' => $role_restrictions['allowed_roles'],
+            'excluded_roles' => $role_restrictions['excluded_roles'],
+            'effective_allowed_roles' => $role_restrictions['effective_allowed_roles'],
+        ];
+
         $coupon_code = sanitize_text_field($coupon->get_code());
-        $user_roles = $user_is_guest ? __('Guest', 'runthings-wc-coupons-role-restrict') : implode(', ', array_map('sanitize_text_field', $user->roles));
+        $user_roles = $user_is_guest
+            ? __('Guest', 'runthings-wc-coupons-role-restrict')
+            : implode(', ', array_map('sanitize_text_field', $user->roles));
 
         wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, ['source' => 'runthings-wc-coupons-role-restrict']);
 
-        $error_message = apply_filters('runthings_wc_coupons_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
+        $error_message = apply_filters('runthings_wc_coupons_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'), $error_context);
         throw new Exception(esc_html($error_message));
 
         return false;
+    }
+
+    /**
+     * Collect role restrictions for the coupon.
+     *
+     * @param array  $coupon_meta All meta data for the coupon.
+     * @param array  $roles All possible roles, including guest.
+     * @return array Allowed and excluded roles in id/name pairs.
+     */
+    private function collect_role_restrictions(array $coupon_meta, array $roles): array
+    {
+        $allowed_roles = [];
+        $excluded_roles = [];
+        $effective_allowed_roles = $roles;
+
+        foreach ($roles as $key => $role_name) {
+            $allowed_meta_key = self::ALLOWED_META_KEY_PREFIX . $key;
+            $excluded_meta_key = self::EXCLUDED_META_KEY_PREFIX . $key;
+
+            if (!empty($coupon_meta[$allowed_meta_key]) && wc_string_to_bool($coupon_meta[$allowed_meta_key])) {
+                $allowed_roles[$key] = $role_name;
+            }
+            if (!empty($coupon_meta[$excluded_meta_key]) && wc_string_to_bool($coupon_meta[$excluded_meta_key])) {
+                $excluded_roles[$key] = $role_name;
+            }
+        }
+
+        // Remove excluded roles from the effective roles
+        $effective_allowed_roles = array_diff_key($effective_allowed_roles, $excluded_roles);
+
+        // If there are explicitly allowed roles, limit effective roles to those
+        if (!empty($allowed_roles)) {
+            $effective_allowed_roles = array_intersect_key($effective_allowed_roles, $allowed_roles);
+        }
+
+        return [
+            'allowed_roles' => $allowed_roles,
+            'excluded_roles' => $excluded_roles,
+            'effective_allowed_roles' => $effective_allowed_roles,
+        ];
+    }
+
+    /**
+     * Get all meta for a coupon, and flatten any single-value arrays.
+     * 
+     * @param WC_Coupon $coupon The coupon to get meta for.
+     * @return array The normalised meta data.
+     */
+    private function get_normalised_meta(WC_Coupon $coupon): array
+    {
+        $coupon_meta_raw = get_post_meta($coupon->get_id());
+
+        $coupon_meta = array_map(function ($meta_value) {
+            return is_array($meta_value) && count($meta_value) === 1 ? $meta_value[0] : $meta_value;
+        }, $coupon_meta_raw);
+
+        return $coupon_meta;
     }
 
     /**
