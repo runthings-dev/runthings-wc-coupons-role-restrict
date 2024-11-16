@@ -36,6 +36,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 namespace Runthings\WCCouponsRoleRestrict;
 
 use Exception;
+use WP_User;
 use WC_Coupon;
 use WC_Discounts;
 
@@ -244,67 +245,111 @@ class CouponsRoleRestrict
     public function validate_coupon_based_on_roles(bool $valid, WC_Coupon $coupon, WC_Discounts $discounts): bool
     {
         if (!$valid) {
+            // should never occur, as fail throws an exception, but just in case
             return $valid;
         }
 
         $roles = self::get_all_roles();
         $user = wp_get_current_user();
+
+        if (!$this->is_user_in_allowed_roles($roles, $user, $coupon)) {
+            return $this->handle_coupon_failure($coupon, $user);
+        }
+
+        if ($this->is_user_in_excluded_roles($roles, $user, $coupon)) {
+            return $this->handle_coupon_failure($coupon, $user);
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks if the user passes the allowed roles criteria.
+     * If no roles are set, all users are allowed.
+     * 
+     * @param array    $roles  An array of all roles available in the system.
+     * @param WP_User  $user   The user to check.
+     * @param WC_Coupon $coupon The coupon being validated.
+     * @return bool Whether the user passes the allowed roles criteria.
+     */
+    private function is_user_in_allowed_roles(array $roles, WP_User $user, WC_Coupon $coupon): bool
+    {
         $user_is_guest = !$user->exists();
-        $role_valid = true;
-        $any_restriction_applied = false;
+        $any_allowed_roles_set = false;
 
         foreach ($roles as $key => $role) {
-            // Check for allowed roles
             $role_setting = get_post_meta($coupon->get_id(), self::ALLOWED_META_KEY_PREFIX . $key, true);
             $role_allowed = wc_string_to_bool($role_setting);
 
             if ($role_allowed) {
-                $any_restriction_applied = true;
-                if (($key === self::GUEST_ROLE && $user_is_guest) || in_array($key, $user->roles, true)) {
-                    $role_valid = true;
+                $any_allowed_roles_set = true;
+
+                if (($key === self::GUEST_ROLE && $user_is_guest)) {
+                    return true; // User matches allowed guest status
+                }
+
+                if (in_array($key, $user->roles, true)) {
+                    return true; // User matches an allowed role
                 }
             }
+        }
 
-            // Check for excluded roles
+        return !$any_allowed_roles_set; // If no allowed roles are set, everyone is allowed
+    }
+
+    /**
+     * Checks if the user passes the excluded roles criteria.
+     * If no roles are set, no users are allowed.
+     * 
+     * @param array    $roles  An array of all roles available in the system.
+     * @param WP_User  $user   The user to check.
+     * @param WC_Coupon $coupon The coupon being validated.
+     * @return bool Whether the user passes the excluded roles criteria.
+     */
+    private function is_user_in_excluded_roles(array $roles, WP_User $user, WC_Coupon $coupon): bool
+    {
+        $user_is_guest = !$user->exists();
+
+        foreach ($roles as $key => $role) {
             $excluded_role_setting = get_post_meta($coupon->get_id(), self::EXCLUDED_META_KEY_PREFIX . $key, true);
             $role_excluded = wc_string_to_bool($excluded_role_setting);
 
             if ($role_excluded) {
-                $any_restriction_applied = true;
-
-                // Skip guest if not explicitly excluded
-                if ($user_is_guest && $key !== self::GUEST_ROLE) {
-                    continue;
+                if (($key === self::GUEST_ROLE && $user_is_guest)) {
+                    return true; // User matches excluded guest status
                 }
 
-                // Invalidate for explicit guest exclusion or matched excluded role
-                if (($key === self::GUEST_ROLE && $user_is_guest) || in_array($key, $user->roles, true)) {
-                    $role_valid = false;
-                    break;
+                if (in_array($key, $user->roles, true)) {
+                    return true; // User matches an excluded role
                 }
             }
         }
 
-        // Final role validation state logging
-        if (!$any_restriction_applied) {
-            return $valid;
-        }
-
-        if (!$role_valid) {
-            $coupon_code = sanitize_text_field($coupon->get_code());
-            $user_roles = $user_is_guest ? __('Guest', 'runthings-wc-coupons-role-restrict') : implode(', ', array_map('sanitize_text_field', $user->roles));
-
-            wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, ['source' => 'runthings-wc-coupons-role-restrict']);
-
-            $error_message = apply_filters('runthings_wc_coupons_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
-            throw new Exception(esc_html($error_message));
-
-            return false;
-        }
-
-        return $role_valid;
+        return false; // User does not match any excluded role
     }
 
+    /**
+     * Handles a coupon validation failure.
+     *
+     * @param WC_Coupon $coupon The coupon that failed validation.
+     * @param WP_User   $user   The user that failed validation.
+     * @return bool Always returns false.
+     * @throws Exception WooCommerce uses exceptions to signal coupon validation failure.
+     */
+    private function handle_coupon_failure(WC_Coupon $coupon, WP_User $user): bool
+    {
+        $user_is_guest = !$user->exists();
+
+        $coupon_code = sanitize_text_field($coupon->get_code());
+        $user_roles = $user_is_guest ? __('Guest', 'runthings-wc-coupons-role-restrict') : implode(', ', array_map('sanitize_text_field', $user->roles));
+
+        wc_get_logger()->error('Coupon validation failed for user role. Coupon code: ' . $coupon_code . '. User roles: ' . $user_roles, ['source' => 'runthings-wc-coupons-role-restrict']);
+
+        $error_message = apply_filters('runthings_wc_coupons_role_restrict_error_message', __('Sorry, this coupon is not valid for your account type.', 'runthings-wc-coupons-role-restrict'));
+        throw new Exception(esc_html($error_message));
+
+        return false;
+    }
 
     /**
      * Gets all roles available in the system, including the guest role as the first entry.
