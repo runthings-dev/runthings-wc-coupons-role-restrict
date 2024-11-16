@@ -42,7 +42,11 @@ By using role restrictions, you can ensure that only verified and authorized use
 My personal motivation was to have 100% discount coupons that could be used only be staff or developers, without the possibility of this being exploited by somebody putting a fake staff email into the billing email address field.
 
 = How do I restrict a coupon to specific roles? =
-Edit the coupon and go to the "Usage restriction" tab. In the "Roles" section, select the roles allowed to use the coupon. If you want to exclude specific roles, select them in the "Excluded roles" section. For guest users, select or exclude the "Customer Is A Guest" pseudo-role.
+Edit the coupon and go to the "Usage restriction" tab. 
+
+In the "Roles" section, select the roles allowed to use the coupon. 
+
+If you want to exclude specific roles, select them in the "Excluded roles" section. For guest users, select or exclude the "Customer Is A Guest" pseudo-role.
 
 = What happens if a role is both allowed and excluded? =
 If a role is both allowed and excluded, the exclusion will take precedence, and users with that role will not be able to use the coupon.
@@ -77,19 +81,26 @@ Initial release of the plugin. No upgrade steps required.
 
 == Filters ==
 
-### runthings_wc_coupons_role_restrict_error_message
+#### runthings_wc_coupons_role_restrict_error_message
 
 This filter allows customization of the error message shown when a coupon is not valid for the user's account type.
 
-**Usage:**
+For detailed documentation and advanced examples, see the [full documentation on GitHub](https://github.com/runthings-dev/runthings-wc-coupons-role-restrict#filters).
 
-`
-add_filter('runthings_wc_coupons_role_restrict_error_message', 'custom_coupon_error_message');
+##### Parameters:
 
-function custom_coupon_error_message($message) {
-    return 'Custom error message for invalid coupon.';
-}
-`
+1. **`$message`** (`string`): The default error message, e.g., `"Sorry, this coupon is not valid for your account type."`.
+2. **`$context`** (`array`): Additional context for the error, including the coupon, user roles, and guest status.
+
+##### `$context` object format:
+
+The `$context` array contains the following keys:
+- **`coupon`** (`WC_Coupon`): The coupon object being validated.
+- **`is_guest`** (`bool`): Whether the current user is a guest (not logged in).
+- **`user`** (`WP_User`): The current user object. For guests, this will be an empty user object.
+- **`allowed_roles`** (`array`): Roles explicitly allowed to use the coupon, in the format `[role_id => role_name]`.
+- **`excluded_roles`** (`array`): Roles explicitly excluded from using the coupon, in the format `[role_id => role_name]`.
+- **`effective_allowed_roles`** (`array`): The final calculated roles allowed to use the coupon, after considering exclusions, in the format `[role_id => role_name]`. This is the set of roles that can use the coupon.
 
 == License ==
 

@@ -6,6 +6,8 @@ Restrict the usage of WooCommerce coupons based on user roles.
 
 This plugin allows you to restrict the usage of WooCommerce coupons based on user roles, including guest users. You can specify which roles (including guests) are allowed or excluded from using a coupon, providing more control over your discount strategies.
 
+Available in the [WordPress.org Plugin Directory](https://wordpress.org/plugins/runthings-wc-coupons-role-restrict/).
+
 ## Features
 
 - Restrict coupon usage based on user roles.
@@ -19,6 +21,92 @@ This plugin allows you to restrict the usage of WooCommerce coupons based on use
 2. Activate the plugin through the 'Plugins' screen in WordPress.
 3. Go to WooCommerce > Coupons and edit or create a coupon.
 4. In the "Usage restriction" tab, you will see the options to select allowed and excluded roles for the coupon, including the "Customer Is A Guest" pseudo-role.
+
+## Filters
+
+### runthings_wc_coupons_role_restrict_error_message
+
+This filter allows customization of the error message shown when a coupon is not valid for the user's account type.
+
+#### Parameters:
+
+| Parameter      | Type     | Description                                                                                   |
+| -------------- | -------- | --------------------------------------------------------------------------------------------- |
+| **`$message`** | `string` | The default error message, e.g., `"Sorry, this coupon is not valid for your account type."`.  |
+| **`$context`** | `array`  | An associative array providing additional context for the error. See table below for details. |
+
+#### `$context` object format:
+
+| Key                           | Type        | Description                                                                                                             |
+| ----------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **`coupon`**                  | `WC_Coupon` | The coupon object being validated.                                                                                      |
+| **`is_guest`**                | `bool`      | Whether the current user is a guest (not logged in).                                                                    |
+| **`guest_role_id`**           | `string`    | The role id for the guest pseudo-role                                                                                   |
+| **`user`**                    | `WP_User`   | The current user object. For guests, this will be an empty user object.                                                 |
+| **`allowed_roles`**           | `array`     | Roles explicitly allowed to use the coupon. See _Roles arrays format_.                                                  |
+| **`excluded_roles`**          | `array`     | Roles explicitly excluded from using the coupon. See _Roles arrays format_.                                             |
+| **`effective_allowed_roles`** | `array`     | The set of roles that can actually use the coupon, determined by subtracting excluded roles. See _Roles arrays format_. |
+
+#### Roles arrays format:
+
+The **roles arrays** (`allowed_roles`, `excluded_roles`, and `effective_allowed_roles`) share a common format:
+
+- **Key**: The role ID (`role_id`), such as `administrator`, `editor`, or `customer`.
+- **Value**: The public-facing name for the role (`role_name`), such as "Administrator" or "Editor".
+
+**Example:**
+
+```php
+[
+   'administrator' => 'Administrator',
+   'editor' => 'Editor',
+   'subscriber' => 'Subscriber',
+]
+```
+
+#### Usage example:
+
+A simple static message replacement:
+
+```php
+add_filter('runthings_wc_coupons_role_restrict_error_message', 'custom_coupon_error_message');
+
+function custom_coupon_error_message($message) {
+    return __('Custom error message for invalid coupon.', 'your-theme');
+}
+```
+
+#### Advanced usage:
+
+Use the `$context` object to dynamically customise the message based on the user's role and coupon restrictions:
+
+```php
+add_filter('runthings_wc_coupons_role_restrict_error_message', function ($message, $context) {
+	// Extract context
+	$excluded_roles = $context['excluded_roles'];
+	$effective_allowed_roles = $context['effective_allowed_roles'];
+	$is_guest = $context['is_guest'];
+	$guest_role_id = $context['guest_role_id'];
+
+	if ($is_guest) {
+		// Custom message if guests are excluded
+		if (array_key_exists($guest_role_id, $excluded_roles)) {
+			return __('Sorry, this coupon is not valid for guests.', 'your-theme');
+		}
+
+		// Custom message if logging in might help
+		if (!array_key_exists($guest_role_id, $effective_allowed_roles) && count($effective_allowed_roles)) {
+			return __('Please log in to use this coupon.', 'your-theme');
+		}
+
+		// No non-guest roles are allowed, logging in won't help
+		return $message;
+	}
+
+	// For logged-in users, fallback to the default error message
+	return $message;
+}, 10, 2);
+```
 
 ## Frequently Asked Questions
 
@@ -54,22 +142,6 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 3. Example denied coupon usage due to invalid role.
    ![Example denied coupon usage due to invalid role](screenshot-3.png)
-
-## Filters
-
-### runthings_wc_coupons_role_restrict_error_message
-
-This filter allows customization of the error message shown when a coupon is not valid for the user's account type.
-
-**Usage:**
-
-```php
-add_filter('runthings_wc_coupons_role_restrict_error_message', 'custom_coupon_error_message');
-
-function custom_coupon_error_message($message) {
-    return 'Custom error message for invalid coupon.';
-}
-```
 
 ## Changelog
 
