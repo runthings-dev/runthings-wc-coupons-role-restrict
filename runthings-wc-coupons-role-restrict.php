@@ -139,7 +139,7 @@ class CouponsRoleRestrict
     public function add_role_restriction_fields(): void
     {
         global $post;
-        $roles = self::get_all_roles();
+        $roles = self::get_all_site_roles();
 
         echo '<div class="options_group">';
         wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
@@ -209,7 +209,7 @@ class CouponsRoleRestrict
             return;
         }
 
-        $roles = self::get_all_roles();
+        $roles = self::get_all_site_roles();
 
         // Reset all role meta
         foreach ($roles as $key => $role) {
@@ -249,7 +249,7 @@ class CouponsRoleRestrict
             return $valid;
         }
 
-        $roles = self::get_all_roles();
+        $roles = self::get_all_site_roles();
         $user = wp_get_current_user();
 
         if (!$this->is_user_in_allowed_roles($roles, $user, $coupon)) {
@@ -353,11 +353,11 @@ class CouponsRoleRestrict
 
     /**
      * Gets all roles available in the system, including the guest role as the first entry.
-     * Mimics the get_editable_roles() function in WordPress core, as it's an admin-only function.
+     * Based on the get_editable_roles() function in WordPress core, as it's an admin-only function.
      *
      * @return array An array of role names, with the guest role as the first entry.
      */
-    private static function get_all_roles(): array
+    private static function get_all_site_roles(): array
     {
         global $wp_roles;
 
