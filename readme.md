@@ -145,6 +145,15 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 ## Changelog
 
+### 1.1.0 - 17th November 2024
+
+- Introduced "Customer Is A Guest" pseudo-role, enabling role restrictions to target guest users.
+- Fixed a bug which would auto exclude the guest when any role was set as excluded.
+- Add support for passing a context object to the `runthings_wc_coupons_role_restrict_error_message` filter.
+- Context includes additional information such as `coupon`, `is_guest`, `user`, `allowed_roles`, `excluded_roles`, and `effective_allowed_roles`.
+- Improve documentation for filters, including usage examples and detailed context information.
+- Updated screenshots
+
 ### 1.0.1 - 15th July 2024
 
 - Fix code snippet formatting in documentation
