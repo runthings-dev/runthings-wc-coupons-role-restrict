@@ -19,7 +19,7 @@ Available in the [WordPress.org Plugin Directory](https://wordpress.org/plugins/
 
 1. Upload the plugin files to the `/wp-content/plugins/runthings-wc-coupons-role-restrict` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress.
-3. Go to WooCommerce > Coupons and edit or create a coupon.
+3. Go to WooCommerce area of the admin panel, and look under Marketing > Coupons and edit or create a coupon.
 4. In the "Usage restriction" tab, you will see the options to select allowed and excluded roles for the coupon, including the "Customer Is A Guest" pseudo-role.
 
 ## Filters
