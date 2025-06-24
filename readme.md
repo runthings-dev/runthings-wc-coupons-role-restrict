@@ -145,6 +145,10 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 ## Changelog
 
+### 1.1.1 - 24th June 2024
+
+- Bump WordPress tested up to field to support 6.8 branch.
+
 ### 1.1.0 - 17th November 2024
 
 - Introduced "Customer Is A Guest" pseudo-role, enabling role restrictions to target guest users.

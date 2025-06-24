@@ -65,6 +65,9 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Changelog ==
 
+= 1.1.1 - 24th June 2024 =
+* Bump WordPress tested up to field to support 6.8 branch.
+
 = 1.1.0 - 17th November 2024 =
 * Introduced "Customer Is A Guest" pseudo-role, enabling role restrictions to target guest users.
 * Fixed a bug which would auto exclude the guest when any role was set as excluded.
@@ -83,6 +86,9 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 * Filter `runthings_wc_coupons_role_restrict_error_message` to customise error message.
 
 == Upgrade Notice ==
+
+= 1.1.1 =
+Bump WordPress tested up to field to support 6.8 branch.
 
 = 1.1.0 =
 This update introduces the "Customer Is A Guest" pseudo-role and adds a context object for more advanced error message customization. No immediate action is required, but you may want to review the new role restriction options and update any custom error message filters to take advantage of the new context.
