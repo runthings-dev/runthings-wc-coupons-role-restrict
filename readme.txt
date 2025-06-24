@@ -1,7 +1,7 @@
 === Coupons Role Restriction for WooCommerce ===
 Contributors: runthingsdev
 Tags: woocommerce, coupons, user roles, role restriction, discount
-Tested up to: 6.7
+Tested up to: 6.8
 Requires at least: 6.4
 Requires PHP: 7.4
 Requires WooCommerce: 8.0
