@@ -145,6 +145,10 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 ## Changelog
 
+### 1.1.2 - 17th December 2024
+
+- Bump tested up to 6.9.
+
 ### 1.1.1 - 24th June 2024
 
 - Bump WordPress tested up to field to support 6.8 branch.

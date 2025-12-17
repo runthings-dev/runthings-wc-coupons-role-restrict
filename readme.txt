@@ -1,11 +1,11 @@
 === Coupons Role Restriction for WooCommerce ===
 Contributors: runthingsdev
 Tags: woocommerce, coupons, user roles, role restriction, discount
-Tested up to: 6.8
+Tested up to: 6.9
 Requires at least: 6.4
 Requires PHP: 7.4
 Requires WooCommerce: 8.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -65,6 +65,9 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Changelog ==
 
+= 1.1.2 - 17th December 2024 =
+* Bump tested up to 6.9.
+
 = 1.1.1 - 24th June 2024 =
 * Bump WordPress tested up to field to support 6.8 branch.
 
@@ -87,17 +90,14 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Upgrade Notice ==
 
+= 1.1.2 =
+Bump tested up to 6.9.
+
 = 1.1.1 =
 Bump WordPress tested up to field to support 6.8 branch.
 
 = 1.1.0 =
 This update introduces the "Customer Is A Guest" pseudo-role and adds a context object for more advanced error message customization. No immediate action is required, but you may want to review the new role restriction options and update any custom error message filters to take advantage of the new context.
-
-= 1.0.1 =
-Fixes formatting in documentation. No action required.
-
-= 1.0.0 =
-Initial release of the plugin. No upgrade steps required.
 
 == Filters ==
 
