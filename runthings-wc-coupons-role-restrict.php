@@ -142,6 +142,7 @@ class CouponsRoleRestrict
         $roles = self::get_all_site_roles();
 
         echo '<div class="options_group">';
+        echo '<div class="hr-section hr-section-coupon_restrictions">' . esc_html__('And', 'runthings-wc-coupons-role-restrict') . '</div>';
         wp_nonce_field('runthings_save_roles', 'runthings_roles_nonce');
 
         $allowed_roles = [];
