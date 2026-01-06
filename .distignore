@@ -1,4 +1,5 @@
 # Ignore development files
+.wordpress-org/
 .git/
 node_modules/
 vendor/
