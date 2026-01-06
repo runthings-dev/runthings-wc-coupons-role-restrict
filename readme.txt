@@ -65,6 +65,10 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Changelog ==
 
+= 1.1.3 - 6th January 2026 =
+* Fixed missing "And" separator in the coupon usage restriction panel to match WooCommerce core styling.
+* Move plugin directory assets to .wordpress-org/ folder.
+
 = 1.1.2 - 17th December 2024 =
 * Bump tested up to 6.9.
 
@@ -90,14 +94,14 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Upgrade Notice ==
 
+= 1.1.3 =
+Fixed missing "And" separator in the coupon usage restriction panel to match WooCommerce core styling.
+
 = 1.1.2 =
 Bump tested up to 6.9.
 
 = 1.1.1 =
 Bump WordPress tested up to field to support 6.8 branch.
-
-= 1.1.0 =
-This update introduces the "Customer Is A Guest" pseudo-role and adds a context object for more advanced error message customization. No immediate action is required, but you may want to review the new role restriction options and update any custom error message filters to take advantage of the new context.
 
 == Filters ==
 

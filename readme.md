@@ -145,6 +145,11 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 ## Changelog
 
+### 1.1.3 - 6th January 2026
+
+- Fixed missing "And" separator in the coupon usage restriction panel to match WooCommerce core styling.
+- Move plugin directory assets to .wordpress-org/ folder.
+
 ### 1.1.2 - 17th December 2024
 
 - Bump tested up to 6.9.
