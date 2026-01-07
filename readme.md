@@ -135,13 +135,13 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 ## Screenshots
 
 1. Coupon settings page with role restriction fields.
-   ![Coupon settings page with role restriction fields](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/main/.wordpress-org/screenshot-1.png)
+   ![Coupon settings page with role restriction fields](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/master/.wordpress-org/screenshot-1.png)
 
 2. Coupon role selection field.
-   ![Coupon role selection field](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/main/.wordpress-org/screenshot-2.png)
+   ![Coupon role selection field](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/master/.wordpress-org/screenshot-2.png)
 
 3. Example denied coupon usage due to invalid role.
-   ![Example denied coupon usage due to invalid role](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/main/.wordpress-org/screenshot-3.png)
+   ![Example denied coupon usage due to invalid role](https://raw.githubusercontent.com/runthings-dev/runthings-wc-coupons-role-restrict/master/.wordpress-org/screenshot-3.png)
 
 ## Changelog
 
