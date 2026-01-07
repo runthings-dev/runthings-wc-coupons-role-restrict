@@ -1,0 +1,10 @@
+name: Release (GitHub)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    uses: runthings-dev/.github/.github/workflows/plugin-release.yml@master
