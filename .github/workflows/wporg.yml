@@ -4,7 +4,8 @@ on:
   push:
     tags:
       - "v*"
-
+  workflow_dispatch:
+  
 jobs:
   deploy:
     uses: runthings-dev/.github/.github/workflows/wporg-svn-deploy.yml@v1
