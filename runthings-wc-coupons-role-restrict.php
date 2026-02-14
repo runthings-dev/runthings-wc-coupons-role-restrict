@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Coupons Role Restriction for WooCommerce
+ * Plugin Name: Role Restriction Coupons for WooCommerce
  * Plugin URI: https://runthings.dev/wordpress-plugins/wc-coupons-role-restrict/
  * Description: Restrict the usage of coupons based on user roles.
  * Version: 1.1.3
@@ -98,7 +98,7 @@ class CouponsRoleRestrict
     public function admin_notice_wc_inactive(): void
     {
         echo '<div class="error"><p>';
-        esc_html_e('Coupons Role Restriction for WooCommerce requires WooCommerce to be active. Please install and activate WooCommerce.', 'runthings-wc-coupons-role-restrict');
+        esc_html_e('Role Restriction Coupons for WooCommerce requires WooCommerce to be active. Please install and activate WooCommerce.', 'runthings-wc-coupons-role-restrict');
         echo '</p></div>';
     }
 
@@ -110,7 +110,7 @@ class CouponsRoleRestrict
         echo '<div class="error"><p>';
         printf(
             /* translators: %s: guest role identifier */
-            esc_html__('Coupons Role Restriction for WooCommerce could not be activated because the %s conflicts with an existing role. Please resolve this conflict and reactivate the plugin.', 'runthings-wc-coupons-role-restrict'),
+            esc_html__('Role Restriction Coupons for WooCommerce could not be activated because the %s conflicts with an existing role. Please resolve this conflict and reactivate the plugin.', 'runthings-wc-coupons-role-restrict'),
             '<abbr title="' . esc_attr(self::GUEST_ROLE) . '">' . esc_html__('guest role', 'runthings-wc-coupons-role-restrict') . '</abbr>'
         );
         echo '</p></div>';
