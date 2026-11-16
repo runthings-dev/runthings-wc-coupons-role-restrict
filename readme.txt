@@ -5,7 +5,7 @@ Tested up to: 7.1
 Requires at least: 6.4
 Requires PHP: 7.4
 Requires WooCommerce: 8.0
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -65,6 +65,9 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Changelog ==
 
+= 1.1.4 - 16th November 2026 =
+* Update WordPress tested-up-to metadata to 7.1.
+
 = 1.1.3 - 6th January 2026 =
 * Fixed missing "And" separator in the coupon usage restriction panel to match WooCommerce core styling.
 * Move plugin directory assets to .wordpress-org/ folder.
@@ -94,14 +97,14 @@ Yes, this plugin works alongside other WooCommerce coupon restrictions such as m
 
 == Upgrade Notice ==
 
+= 1.1.4 =
+Update WordPress tested-up-to metadata to 7.1.
+
 = 1.1.3 =
 Fixed missing "And" separator in the coupon usage restriction panel to match WooCommerce core styling.
 
 = 1.1.2 =
 Bump tested up to 6.9.
-
-= 1.1.1 =
-Bump WordPress tested up to field to support 6.8 branch.
 
 == Filters ==
 
